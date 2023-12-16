@@ -39,7 +39,7 @@ public class VillagerEntityMixin {
             if (stack.getItem() instanceof EnchantedBookItem eb) {
                 boolean succeed = librarian.getOffers().add(new TradeOffer(new ItemStack(Items.EMERALD, calculateBookPrice(stack)), new ItemStack(Items.BOOK), stack, 12, 1, 0.2f));
                 if (succeed ) librarian.getInventory().removeStack(i);
-                GiveVillagerTrade.LOGGER.info("Enchanted book with enchantments {" + stack.getEnchantments() + "} added to librarian trade.");
+                GiveVillagerTrade.LOGGER.info("Enchanted book added to librarian trade.");
             }
         }
     }
