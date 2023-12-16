@@ -34,9 +34,8 @@ public class VillagerEntityMixin {
 
     @Unique
     private void updateLibrarianTradeOffer(VillagerEntity librarian) {
-        DefaultedList<ItemStack> stacks = librarian.getInventory().stacks;
-        for(int i = 0; i < stacks.size(); i++) {
-            ItemStack stack = stacks.get(i);
+        for(int i = 0; i < librarian.getInventory().size(); i++) {
+            ItemStack stack = librarian.getInventory().getStack(i);
             if (stack.getItem() instanceof EnchantedBookItem eb) {
                 boolean succeed = librarian.getOffers().add(new TradeOffer(new ItemStack(Items.EMERALD, calculateBookPrice(stack)), new ItemStack(Items.BOOK), stack, 12, 1, 0.2f));
                 if (succeed ) librarian.getInventory().removeStack(i);
