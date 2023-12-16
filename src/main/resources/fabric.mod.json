@@ -9,7 +9,7 @@
 	],
 	"contact": {
 		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
+		"sources": "https://github.com/ithilelda/givevillagertrade"
 	},
 	"license": "CC0-1.0",
 	"icon": "assets/givevillagertrade/icon.png",
@@ -25,10 +25,6 @@
 	"depends": {
 		"fabricloader": ">=0.14",
 		"minecraft": "~1.20",
-		"java": ">=17",
-		"fabric-api": "*"
-	},
-	"suggests": {
-		"another-mod": "*"
+		"java": ">=17"
 	}
 }
