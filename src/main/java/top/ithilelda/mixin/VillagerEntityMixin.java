@@ -1,20 +1,24 @@
 package top.ithilelda.mixin;
 
+import com.google.common.collect.ImmutableSet;
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.item.EnchantedBookItem;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.village.TradeOffer;
+import net.minecraft.village.VillagerData;
 import net.minecraft.village.VillagerProfession;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -22,7 +26,18 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import top.ithilelda.GiveVillagerTrade;
 
 @Mixin(VillagerEntity.class)
-public class VillagerEntityMixin {
+public abstract class VillagerEntityMixin {
+    // cannot locate the contains method of ImmutableSet, so I'll append my own elements to it at the call of getting gatherableItems.
+    @ModifyExpressionValue(method = "canGather", at = @At(value = "INVOKE", target = "Lnet/minecraft/village/VillagerProfession;gatherableItems()Lcom/google/common/collect/ImmutableSet;"))
+    private ImmutableSet<Item> canGatherAdditionalItems(ImmutableSet<Item> original) {
+        VillagerEntity villager = (VillagerEntity)(Object)this;
+        VillagerProfession profession = villager.getVillagerData().getProfession();
+        return ImmutableSet.<Item>builder()
+                .addAll(original)
+                .addAll(GiveVillagerTrade.AdditionalGatherableItems.getOrDefault(profession, ImmutableSet.of()))
+                .build();
+    }
+
     @Inject(at= @At("TAIL"), method = "loot")
     private void lootAfter(ItemEntity item, CallbackInfo ci) {
         VillagerEntity villager = (VillagerEntity)(Object)this;
